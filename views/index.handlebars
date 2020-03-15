@@ -1,0 +1,48 @@
+<h1>Scraped Articles</h1>
+{{#each articles}}
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">{{this.title}}</h5>
+      <p class="card-text">{{this.title}}</p>
+      <a href={{link}} target="_blank" class="btn btn-primary">Read Article</a>
+      <a href="#" class="btn btn-outline-secondary float-right" data-id="{{this._id}}" data-toggle="modal"
+        data-target="#comments">Add a
+        Comment</a>
+      <a href="#" class="btn btn-outline-secondary float-right" data-id="{{this._id}}" data-toggle="modal"
+        data-target="#readComments">Read
+        comments</a>
+    </div>
+  </div>
+</div>
+
+{{!-- Add comment modal --}}
+<div class="modal fade bd-example-modal-lg" id="comments" tabindex="-1" role="dialog"
+  aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leave a comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <form id="cms">
+          <div class="form-group">
+            <label for="commentText">Add your comment:</label>
+            <textarea placeholder="Please enter your comment" class="form-control" required rows="10"
+              id="commentText"></textarea>
+            <br />
+            <button type="submit" data-id="{{this._id}}" id="submitComment" class="btn btn-success submit"
+              data-dismiss="modal">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{/each}}
+
+{{!-- <p>{{articles.map(t=>t.title)}}</p> --}}
