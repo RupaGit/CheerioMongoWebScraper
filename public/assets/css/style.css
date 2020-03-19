@@ -1,13 +1,25 @@
 body {
-  background-color: #b19074;
+  background-image: url("../images/background.jpg");
+  background-repeat: no-repeat;
+  /* Full height */
+  /* height: 100%; */
+  /* Center and scale the image nicely */
+  /*background-position: center;*/
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 h1 {
   text-align: center;
   padding-bottom: 50px;
+  font-family: Futura;
 }
 a {
   margin-left: 20px;
   margin-right: 20px;
+}
+#deleteComment {
+  float: right;
+  margin-left: 50px;
 }
 #wrapper {
   width: 960px;

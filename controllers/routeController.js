@@ -69,7 +69,7 @@ router.post("/submitComment/:id", function(req, res) {
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
       console.log("comment ID is ", dbComment._id);
       return db.Article.findOneAndUpdate(
-        { _id: mongojs.ObjectId(req.params.id) },
+        { _id: req.params.id },
         { $push: { comments: dbComment._id } },
         { new: true }
       );
@@ -84,23 +84,50 @@ router.post("/submitComment/:id", function(req, res) {
     });
 });
 
-// // Route for saving/updating an Article's associated Note
-// app.post("/articles/:id", function(req, res) {
-//   // Create a new note and pass the req.body to the entry
-//   db.Note.create(req.body)
-//     .then(function(dbNote) {
-//       // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-//       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-//       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-//       return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
-//     })
-//     .then(function(dbArticle) {
-//       // If we were able to successfully update an Article, send it back to the client
-//       res.json(dbArticle);
-//     })
-//     .catch(function(err) {
-//       // If an error occurred, send it to the client
-//       res.json(err);
-//     });
-// });
+router.get("/getComments/:id", function(req, res) {
+  // Grab every document in the Articles collection
+  db.Article.findOne({ _id: req.params.id })
+    // Specify that we want to populate the retrieved libraries with any associated books
+    .populate("comments")
+    .then(function(data) {
+      console.log("data is", data);
+      // If any Libraries are found, send them to the client with any associated Books
+      var hbsObject = {
+        comments: data.comments
+      };
+      //   console.log(hbsObject);
+      //   hbsObject = JSON.parse(hbsObject);
+      // If we were able to successfully find Articles, send them back to the client
+      console.log("data passed to handlebars", hbsObject);
+
+      res.json(hbsObject);
+    })
+    .catch(function(err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+router.delete("/deleteComment/:commentId&:articleId", function(req, res) {
+  // Grab every document in the Articles collection
+  console.log("comment id is ", req.params.commentId);
+  console.log("article id is ", req.params.articleId);
+  db.Comment.findOneAndDelete({ _id: req.params.commentId })
+    .then(function(dbArticle) {
+      // If the User was updated successfully, send it back to the client
+      console.log(dbArticle);
+      return db.Article.findOneAndUpdate(
+        { _id: req.params.articleId },
+        { $pull: { comments: dbArticle._id } }
+      );
+    })
+    .then(function(dbArticle) {
+      // If the User was updated successfully, send it back to the client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
 module.exports = router;
